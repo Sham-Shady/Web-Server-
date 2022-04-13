@@ -1,5 +1,3 @@
-//test commit by Anderson
-
 #include "net_util.h"
 
 #include <stdio.h>
@@ -58,7 +56,6 @@ void load_all_sessions();
 
 // Saves the given sessions to the disk.
 void save_session(int session_id);
-
 // Assigns a browser ID to the new browser.
 // Determines the correct session ID for the new browser
 // through the interaction with it.
@@ -231,6 +228,10 @@ void get_session_file_path(int session_id, char path[]) {
  * Loads every session from the disk one by one if it exists.
  */
 void load_all_sessions() {
+  /* for(int i = 0; i < NUM_SESSIONS; ++i){
+    get_session_file_path(session_list[i],   needs something for path  ...  );
+    
+    }*/
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
     //       Don't forget to load all of sessions on the disk.
@@ -242,6 +243,11 @@ void load_all_sessions() {
  * @param session_id the session ID
  */
 void save_session(int session_id) {
+  /* for(int i = 0; i < NUM_SESSIONS; ++i){
+         get_session_file_path(session_list[i],  ...again path.. );
+	 save session to somewhere not sure yet...
+
+     }*/
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
 }

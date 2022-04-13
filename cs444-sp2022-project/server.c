@@ -228,10 +228,7 @@ void get_session_file_path(int session_id, char path[]) {
  * Loads every session from the disk one by one if it exists.
  */
 void load_all_sessions() {
-  /* for(int i = 0; i < NUM_SESSIONS; ++i){
-    get_session_file_path(session_list[i],   needs something for path  ...  );
-    
-    }*/
+ 
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
     //       Don't forget to load all of sessions on the disk.
@@ -242,12 +239,13 @@ void load_all_sessions() {
  *
  * @param session_id the session ID
  */
-void save_session(int session_id) {
-  /* for(int i = 0; i < NUM_SESSIONS; ++i){
-         get_session_file_path(session_list[i],  ...again path.. );
-	 save session to somewhere not sure yet...
-
-     }*/
+void save_session(int session_id, char session_info) {
+    char path[BUFFER_LEN];
+    get_session_file_path(session_id, path);
+    FILE *file;
+    file = fopen(path, "w+");
+    fputs(session_info, fp);
+    fclose(fp);
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
 }

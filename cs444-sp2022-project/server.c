@@ -1,4 +1,4 @@
-#include "net_util.h" 
+#include "net_util.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -150,18 +150,44 @@ bool process_message(int session_id, const char message[]) {
 
     // Processes the result variable.
     token = strtok(data, " ");
-    result_idx = token[0] - 'a';
+    //check that the token exists
+    if(strlen(token) == 1){
+        //check that the character at token[0] is between a and z on the alphabet
+        if('a' <= token[0] && token[0] <= 'z'){
+            result_idx = token[0] - 'a';
+        }
+    }
+    else{
+      return false;
+    }
 
     // Processes "=".
     token = strtok(NULL, " ");
+    //if the length of the string is 0
+    if(strlen(token) == 0){
+        return false;
+    }
 
     // Processes the first variable/value.
     token = strtok(NULL, " ");
     if (is_str_numeric(token)) {
         first_value = strtod(token, NULL);
     } else {
-        int first_idx = token[0] - 'a';
-        first_value = session_list[session_id].values[first_idx];
+        //check that the length of the token is 1
+        if(strlen(token) == 1){
+          //assign first_idx to be token[0] minus a, meaning whatever character in the alphabet it is
+          int first_idx = token[0] - 'a';
+          //check that first_idx is one of the variables on the session_id, else return false for everything else because it fails verification
+          if(session_list[session_id].variables[first_idx] == true){
+            first_value = session_list[session_id].values[first_idx];
+          }
+          else{
+            return false;
+          }
+        }
+        else{
+          return false;
+        }
     }
 
     // Processes the operation symbol.
@@ -228,7 +254,7 @@ void get_session_file_path(int session_id, char path[]) {
  * Loads every session from the disk one by one if it exists.
  */
 void load_all_sessions() {
- 
+
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
     //       Don't forget to load all of sessions on the disk.

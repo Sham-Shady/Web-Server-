@@ -150,7 +150,7 @@ bool process_message(int session_id, const char message[]) {
 
     // Processes the result variable.
     token = strtok(data, " ");
-    //check that the token exists
+    //check that the the result exists
     if(strlen(token) == 1){
         //check that the character at token[0] is between a and z on the alphabet
         if('a' <= token[0] && token[0] <= 'z'){
@@ -164,26 +164,40 @@ bool process_message(int session_id, const char message[]) {
     // Processes "=".
     token = strtok(NULL, " ");
     //if the length of the string is 0
-    if(strlen(token) == 0){
-        return false;
+    	//if(strlen(token) == 0){
+	if(strlen(token) != 1){
+        	return false;
     }
+	
+	//check if token 0 is the = 
+	if(token[0] != '='){
+		return false;
+	} 
+
 
     // Processes the first variable/value.
     token = strtok(NULL, " ");
+	//check that token exists
+	if(token == NULL){
+		return false;
+	}
     if (is_str_numeric(token)) {
         first_value = strtod(token, NULL);
     } else {
         //check that the length of the token is 1
         if(strlen(token) == 1){
-          //assign first_idx to be token[0] minus a, meaning whatever character in the alphabet it is
-          int first_idx = token[0] - 'a';
-          //check that first_idx is one of the variables on the session_id, else return false for everything else because it fails verification
-          if(session_list[session_id].variables[first_idx] == true){
-            first_value = session_list[session_id].values[first_idx];
-          }
-          else{
-            return false;
-          }
+		//same check as with the result variable
+		if('a' <= token[0] && token[0] <= 'z'){
+          		//assign first_idx to be token[0] minus a, meaning whatever character in the alphabet it is
+          		int first_idx = token[0] - 'a';
+          		//check that first_idx is one of the variables on the session_id, else return false for everything else because it fails verification
+          		if(session_list[session_id].variables[first_idx] == true){
+            			first_value = session_list[session_id].values[first_idx];
+          		}
+          		else{
+           			return false;
+          		}
+		}
         }
         else{
           return false;
@@ -266,12 +280,6 @@ void load_all_sessions() {
  * @param session_id the session ID
  */
 void save_session(int session_id, char session_info[]) {
-    char path[BUFFER_LEN];
-    get_session_file_path(session_id, path);
-    FILE *file;
-    file = fopen(path, "w+");
-    fputs(session_info, file);
-    fclose(file);
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
 }

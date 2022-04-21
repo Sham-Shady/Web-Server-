@@ -267,8 +267,18 @@ void get_session_file_path(int session_id, char path[]) {
 /**
  * Loads every session from the disk one by one if it exists.
  */
-void load_all_sessions() {
-
+vvoid load_all_sessions() {
+	printf("loading sessions...\n");
+	char filepath[BUFFER_LEN];  //create arrays
+	char session_info[BUFFER_LEN];
+	for(int n = 0; n < NUM_SESSIONS; n++){ //loop through all sessions
+		get_session_file_path(n, filepath); //find the filepath for session
+		FILE *file = fopen(filepath, "r"); //read file
+		if(file != NULL)  //if file opens
+			while(fscanf(file, "%[^\n] ", session_info) != EOF) //read in until EOF
+				process_message(n, session_info); //process message onto disk
+	}
+	printf("...Sessions loaded\n");
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
     //       Don't forget to load all of sessions on the disk.
@@ -279,15 +289,24 @@ void load_all_sessions() {
  *
  * @param session_id the session ID
  */
-<<<<<<< HEAD
-void save_session(int session_id, char session_info[]) {
-=======
 void save_session(int session_id) {
->>>>>>> 44eecb5fea956cdb98e3dd54ba9ec0d9602057e6
+	
+    printf("Saving session...\n");  //give user feedback
+    char path[BUFFER_LEN];
+    char session_contents[BUFFER_LEN];
+  
+    get_session_file_path(session_id, path);  //find file path for session id
+    FILE* file;
+    file = fopen(path, "w"); //try to open file in path found by get session file path
+    if(file != NULL){  //if file is found
+    	session_to_str(session_id, session_contents); //move session info into the session_contents array to be saved in file
+    	fprintf(file, "%s", session_contents); //print file and save contents
+    	fclose(file);  //close file
+    	printf("...Session saved\n");  //give user feedback
+    }
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
 }
-
 /**
  * Assigns a browser ID to the new browser.
  * Determines the correct session ID for the new browser through the interaction with it.

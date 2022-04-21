@@ -266,12 +266,6 @@ void load_all_sessions() {
  * @param session_id the session ID
  */
 void save_session(int session_id, char session_info[]) {
-    char path[BUFFER_LEN];
-    get_session_file_path(session_id, path);
-    FILE *file;
-    file = fopen(path, "w+");
-    fputs(session_info, file);
-    fclose(file);
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
 }

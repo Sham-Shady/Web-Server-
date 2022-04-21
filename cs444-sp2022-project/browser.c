@@ -24,11 +24,39 @@ void read_user_input(char message[]);
 // Loads the cookie from the disk and gets the session ID
 // if there exists one.
 // Otherwise, assigns the session ID to be -1.
-void load_cookie();
+/**
+ * Loads the cookie from the disk and gets the session ID if there exists one.
+ * Otherwise, assigns the session ID to be -1.
+ */
+void load_cookie() {
+	printf("loading cookie\n");
+	char session_id_path[20];
+	FILE *file = fopen(COOKIE_PATH, "r");  //opens file for reading
+	if(file == NULL){
+		session_id = -1;  //if nothing loads session ID = -1
+	}
+	else{
+		while(fscanf(file, "%[^\n] ", session_id_path) != EOF){  //otherwise loads from disk the session id
+			session_id = strtol(session_id_path, NULL, 20);
+		}
+	}
+    // TODO: For Part 1.2, write your file operation code here.
+    // Hint: The file path of the cookie is stored in COOKIE_PATH.
 
-// Saves the session ID to the cookie on the disk.
-void save_cookie();
+}
 
+/**
+ * Saves the session ID to the cookie on the disk.
+ */
+void save_cookie() {
+	printf("saving cookie\n");
+	char session_id_path[20];  //creates array
+	FILE *file = fopen(COOKIE_PATH, "w");  //opens file for writing 
+	fputs(session_id_path, file);  //writes to file
+	fclose(file);  //closes file
+    // TODO: For Part 1.2, write your file operation code here.
+    // Hint: The file path of the cookie is stored in COOKIE_PATH.
+}
 // Interacts with the server to get or confirm
 // the final session ID.
 void register_server();

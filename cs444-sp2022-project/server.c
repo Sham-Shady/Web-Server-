@@ -267,7 +267,7 @@ void get_session_file_path(int session_id, char path[]) {
 /**
  * Loads every session from the disk one by one if it exists.
  */
-vvoid load_all_sessions() {
+void load_all_sessions() {
 	printf("loading sessions...\n");
 	char filepath[BUFFER_LEN];  //create arrays
 	char session_info[BUFFER_LEN];
@@ -452,8 +452,8 @@ void start_server(int port) {
         // Starts the handler thread for the new browser.
         // TODO: For Part 2.1, creat a thread to run browser_handler() here.
         pthread_t p;
-        Pthread_create(&p , NULL, browser_handler, &browser_socket_fd);
-        Pthread_join(p, NULL);
+        pthread_create(&p , NULL, browser_handler, &browser_socket_fd);
+        pthread_join(p, NULL);
     }
 
     // Closes the socket.

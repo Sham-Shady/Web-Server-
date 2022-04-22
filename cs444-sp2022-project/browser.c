@@ -42,7 +42,7 @@ void load_cookie() {
 	}
     // TODO: For Part 1.2, write your file operation code here.
     // Hint: The file path of the cookie is stored in COOKIE_PATH.
-
+	session_id = -1; 
 }
 
 /**
@@ -57,6 +57,9 @@ void save_cookie() {
     // TODO: For Part 1.2, write your file operation code here.
     // Hint: The file path of the cookie is stored in COOKIE_PATH.
 }
+
+
+
 // Interacts with the server to get or confirm
 // the final session ID.
 void register_server();
@@ -88,23 +91,6 @@ void read_user_input(char message[]) {
     }
 }
 
-/**
- * Loads the cookie from the disk and gets the session ID if there exists one.
- * Otherwise, assigns the session ID to be -1.
- */
-void load_cookie() {
-    // TODO: For Part 1.2, write your file operation code here.
-    // Hint: The file path of the cookie is stored in COOKIE_PATH.
-    session_id = -1; // You may move this line to anywhere inside this fucntion.
-}
-
-/**
- * Saves the session ID to the cookie on the disk.
- */
-void save_cookie() {
-    // TODO: For Part 1.2, write your file operation code here.
-    // Hint: The file path of the cookie is stored in COOKIE_PATH.
-}
 
 /**
  * Interacts with the server to get or confirm the final session ID.
@@ -175,9 +161,10 @@ void start_browser(const char host_ip[], int port) {
     save_cookie();
 
     // Main loop to read in the user's input and send it out.
-    pthread_t p;
-        Pthread_create(&p , NULL, server_listener());
-        Pthread_join(p, NULL);
+    //pthread_t p;
+     //   //pthread_create(&p , NULL, server_listener());
+	//	pthread_create(&p , NULL, server_listener(), &p);
+     //   pthread_join(p, NULL);
     while (browser_on) {
         char message[BUFFER_LEN];
         read_user_input(message);
@@ -187,6 +174,7 @@ void start_browser(const char host_ip[], int port) {
         // TODO: For Part 2.3, move server_listener() out of the loop and
         //  creat a thread to run it.
         // Hint: Should we place server_listener() before or after the loop?
+		server_listener();
     }
 
     // Closes the socket.

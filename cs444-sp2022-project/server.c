@@ -248,11 +248,9 @@ bool process_message(int session_id, const char message[]) {
  */
 void broadcast(int session_id, const char message[]) {
     for (int i = 0; i < NUM_BROWSER; ++i) {
-    	pthread_mutex_lock(&browser_list_mutex);
         if (browser_list[i].in_use && browser_list[i].session_id == session_id) {
             send_message(browser_list[i].socket_fd, message);
         }
-        pthread_mutex_unlock(&browser_list_mutex);
     }
 }
 

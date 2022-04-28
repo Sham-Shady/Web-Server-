@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <arpa/inet.h>
 
+
 #define COOKIE_PATH "./browser.cookie"
 
 static bool browser_on = true;  // Determines if the browser is on/off.
@@ -124,7 +125,7 @@ void server_listener() {
     // TODO: For Part 2.3, uncomment the loop code that was commented out
     //  when you are done with multithreading.
 
-    // while (browser_on) {
+    while (browser_on) {
 
     char message[BUFFER_LEN];
     receive_message(server_socket_fd, message);
@@ -133,7 +134,8 @@ void server_listener() {
 
     puts(message);
 
-    //}
+    }
+
 }
 
 /**
@@ -174,10 +176,9 @@ void start_browser(const char host_ip[], int port) {
     save_cookie();
 
     // Main loop to read in the user's input and send it out.
-    //pthread_t p;
-     //   //pthread_create(&p , NULL, server_listener());
-	//	pthread_create(&p , NULL, server_listener(), &p);
-     //   pthread_join(p, NULL);
+    pthread_t p;
+    pthread_create(&p , NULL, server_listener, NULL);
+	
     while (browser_on) {
         char message[BUFFER_LEN];
         read_user_input(message);
@@ -187,9 +188,9 @@ void start_browser(const char host_ip[], int port) {
         // TODO: For Part 2.3, move server_listener() out of the loop and
         //  creat a thread to run it.
         // Hint: Should we place server_listener() before or after the loop?
-		server_listener();
+		//server_listener();
     }
-
+   
     // Closes the socket.
     close(server_socket_fd);
     printf("Closed the connection to %s:%d.\n", host_ip, port);

@@ -248,9 +248,11 @@ bool process_message(int session_id, const char message[]) {
  */
 void broadcast(int session_id, const char message[]) {
     for (int i = 0; i < NUM_BROWSER; ++i) {
+    	pthread_mutex_lock(&browser_list_mutex);
         if (browser_list[i].in_use && browser_list[i].session_id == session_id) {
             send_message(browser_list[i].socket_fd, message);
         }
+        pthread_mutex_unlock(&browser_list_mutex);
     }
 }
 
@@ -278,7 +280,7 @@ void load_all_sessions() {
 			while(fscanf(file, "%[^\n] ", session_info) != EOF) //read in until EOF
 				process_message(n, session_info); //process message onto disk
 	}
-	printf("...Sessions loaded\n");
+	//printf("...Sessions loaded\n");
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
     //       Don't forget to load all of sessions on the disk.
@@ -302,8 +304,9 @@ void save_session(int session_id) {
     	session_to_str(session_id, session_contents); //move session info into the session_contents array to be saved in file
     	fprintf(file, "%s", session_contents); //print file and save contents
     	fclose(file);  //close file
-    	printf("...Session saved\n");  //give user feedback
+    	//printf("...Session saved\n");  //give user feedback
     }
+    
     // TODO: For Part 1.1, write your file operation code here.
     // Hint: Use get_session_file_path() to get the file path for each session.
 }
@@ -320,34 +323,38 @@ int register_browser(int browser_socket_fd) {
     // TODO: For Part 2.2, identify the critical sections where different threads may read from/write to
     //  the same shared static array browser_list and session_list. Place the lock and unlock
     //  code around the critical sections identified.
-    pthread_mutex_lock(&browser_list_mutex);
+
     for (int i = 0; i < NUM_BROWSER; ++i) {
         if (!browser_list[i].in_use) {
+            pthread_mutex_lock(&browser_list_mutex);
             browser_id = i;
             browser_list[browser_id].in_use = true;
             browser_list[browser_id].socket_fd = browser_socket_fd;
+            pthread_mutex_unlock(&browser_list_mutex);
             break;
         }
     }
-    pthread_mutex_unlock(&browser_list_mutex);
+
 
     char message[BUFFER_LEN];
     receive_message(browser_socket_fd, message);
 
     int session_id = strtol(message, NULL, 10);
 
-    pthread_mutex_lock(&session_list_mutex);
+
     if (session_id == -1) {
         for (int i = 0; i < NUM_SESSIONS; ++i) {
             if (!session_list[i].in_use) {
+            	pthread_mutex_lock(&session_list_mutex);
                 session_id = i;
                 session_list[session_id].in_use = true;
+                pthread_mutex_unlock(&session_list_mutex);
                 break;
             }
         }
     }
     browser_list[browser_id].session_id = session_id;
-    pthread_mutex_unlock(&session_list_mutex);
+
 
     sprintf(message, "%d", session_id);
     send_message(browser_socket_fd, message);
@@ -448,12 +455,14 @@ void start_server(int port) {
             perror("Socket accept failed");
             continue;
         }
+        int i = 0;
+	pthread_t p;
+	pthread_create(&p, NULL , browser_handler , browser_socket_fd);
 
         // Starts the handler thread for the new browser.
         // TODO: For Part 2.1, creat a thread to run browser_handler() here.
-        pthread_t p;
-        pthread_create(&p , NULL, browser_handler, &browser_socket_fd);
-        pthread_join(p, NULL);
+        
+    
     }
 
     // Closes the socket.
